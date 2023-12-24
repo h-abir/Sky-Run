@@ -5,6 +5,7 @@
 #include "stdio.h"
 #include <string>
 #include "coin.h"
+#include <bits/stdc++.h>
 
 
 
@@ -657,5 +658,39 @@ void Game::renderLeaderboardWindow()
     SDL_RenderClear(rend);
     SDL_RenderCopy(rend,menuBackgroundTexture,NULL,NULL);
     SDL_RenderCopy(rend,backButtonTexture,NULL,&backButtonRect);
+    std::ifstream in("data/Scores.dat");
+    std::vector<std::pair<int,std::string>> v;
+    std::string name;
+    int point;
+    while(in >> point)
+    {
+        in >> name;
+        v.push_back({point,name});
+    }
+    sort(v.rbegin(), v.rend());
+
+    for(int i = 0, height = 200; i < std::min((int)v.size(),5); i++, height += 120)
+    {
+        renderRow(v[i].second, v[i].first, height);
+    }
+
+    in.close();
+
     SDL_RenderPresent(rend);
+}
+
+void Game::renderRow(std::string name, int num, int height)
+{
+    int name_width, name_height;
+    TTF_SizeText(font60, name.c_str(), &name_width, &name_height);
+    SDL_Texture* nameTexture = createTextureFromString(name, {0,0,0,255});
+    SDL_Rect rect = {100, height, name_width, name_height};
+    SDL_RenderCopy(rend,nameTexture,NULL,&rect);
+
+    int num_width, num_height;
+    std::string num_str = std::to_string(num);
+    TTF_SizeText(font60, num_str.c_str(), &num_width, &num_height);
+    SDL_Texture* numTexture = createTextureFromString(num_str, {0,0,0,255});
+    SDL_Rect rect2 = {1180-num_width, height, num_width, num_height};
+    SDL_RenderCopy(rend,numTexture,NULL,&rect2);
 }

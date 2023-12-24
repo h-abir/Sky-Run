@@ -104,6 +104,7 @@ private:
     void renderInstructionWindow();
     void renderLeaderboardWindow();
     void reset();
+    void renderRow(std::string name, int num, int height); 
     
 
     // Declare the collision check function
